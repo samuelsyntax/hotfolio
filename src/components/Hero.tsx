@@ -37,12 +37,12 @@ export default function Hero() {
                         style={{ background: 'var(--accent)', color: 'var(--accent-text)', boxShadow: '0 4px 30px color-mix(in srgb, var(--accent) 20%, transparent)' }}>
                         View My Work
                     </a>
-                    <a href="#about"
+                    <a href="#skills"
                         className="px-8 py-3.5 rounded-full font-semibold border-2 text-[var(--text)] transition-all"
                         style={{ borderColor: 'var(--accent)' }}
                         onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--accent)'; e.currentTarget.style.color = 'var(--accent-text)'; }}
                         onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--text)'; }}>
-                        About Me
+                        My Skills
                     </a>
                 </div>
             </div>
