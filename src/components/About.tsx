@@ -33,13 +33,13 @@ export default function About() {
 
                     <div className="reveal">
                         <p className="text-[var(--text-muted)] mb-5 text-lg">
-                            I&apos;m a passionate software developer with 5+ years of experience building web applications that users love. My journey started with curiosity about how things work on the internet, and it evolved into a career dedicated to creating seamless digital experiences.
+                            I&apos;m a software developer with 5+ years of experience building web applications that users love. My journey started with curiosity about how things work on the internet.
                         </p>
                         <p className="text-[var(--text-muted)] mb-8 text-lg">
                             When I&apos;m not coding, you&apos;ll find me exploring new technologies, contributing to open-source projects, or sharing knowledge through my blog.
                         </p>
 
-                        <div className="flex gap-10 flex-wrap">
+                        {/* <div className="flex gap-10 flex-wrap">
                             {[
                                 { num: '5+', label: 'Years Experience' },
                                 { num: '50+', label: 'Projects Completed' },
@@ -50,7 +50,7 @@ export default function About() {
                                     <span className="text-[var(--text-muted)] text-sm">{stat.label}</span>
                                 </div>
                             ))}
-                        </div>
+                        </div> */}
                     </div>
                 </div>
             </div>
