@@ -1,13 +1,26 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-import { getLatestPosts } from '@/data/blogData';
 
-const latestPosts = getLatestPosts(3);
+interface BlogPost {
+    slug: string;
+    title: string;
+    date: string;
+    description: string;
+}
 
 export default function Blog() {
     const ref = useRef<HTMLDivElement>(null);
+    const [posts, setPosts] = useState<BlogPost[]>([]);
+
+    useEffect(() => {
+        // Fetch posts from API
+        fetch('/api/posts')
+            .then(res => res.json())
+            .then(data => setPosts(data.slice(0, 3)))
+            .catch(() => setPosts([]));
+    }, []);
 
     useEffect(() => {
         const el = ref.current;
@@ -19,7 +32,7 @@ export default function Blog() {
             el.querySelectorAll('.reveal').forEach(el => observer.observe(el));
             return () => observer.disconnect();
         }
-    }, []);
+    }, [posts]);
 
     return (
         <section ref={ref} className="py-24 bg-[var(--bg-secondary)]" id="blog">
@@ -27,24 +40,29 @@ export default function Blog() {
                 <h2 className="reveal gradient-text text-3xl md:text-4xl font-bold text-center mb-16">Latest Blog Posts</h2>
 
                 <div className="grid md:grid-cols-3 gap-8">
-                    {latestPosts.map((post) => (
-                        <article key={post.id}
-                            className="reveal bg-[var(--bg-card)] rounded-2xl overflow-hidden transition-all hover:-translate-y-2"
+                    {posts.map((post) => (
+                        <Link
+                            key={post.slug}
+                            href={`/blog/${post.slug}`}
+                            className="reveal bg-[var(--bg-card)] rounded-2xl overflow-hidden transition-all hover:-translate-y-2 block"
                             style={{ border: '1px solid color-mix(in srgb, var(--border) 10%, transparent)' }}
                             onMouseEnter={(e) => { e.currentTarget.style.boxShadow = '0 8px 40px color-mix(in srgb, var(--accent) 15%, transparent)'; }}
-                            onMouseLeave={(e) => { e.currentTarget.style.boxShadow = 'none'; }}>
-                            <div className="h-40 bg-[var(--bg-secondary)] flex items-center justify-center text-5xl">
-                                {post.icon}
-                            </div>
+                            onMouseLeave={(e) => { e.currentTarget.style.boxShadow = 'none'; }}
+                        >
+
                             <div className="p-6">
-                                <span className="text-sm font-medium" style={{ color: 'var(--accent)' }}>{post.date}</span>
+                                <span className="text-sm font-medium" style={{ color: 'var(--accent)' }}>
+                                    {new Date(post.date).toLocaleDateString('en-US', {
+                                        year: 'numeric',
+                                        month: 'short',
+                                        day: 'numeric'
+                                    })}
+                                </span>
                                 <h3 className="text-lg font-semibold text-[var(--text)] my-2">{post.title}</h3>
-                                <p className="text-[var(--text-muted)] text-sm mb-4">{post.desc}</p>
-                                <Link href="/blog" className="font-medium transition-opacity" style={{ color: 'var(--accent)' }}
-                                    onMouseEnter={(e) => { e.currentTarget.style.opacity = '0.7'; }}
-                                    onMouseLeave={(e) => { e.currentTarget.style.opacity = '1'; }}>Read More →</Link>
+                                <p className="text-[var(--text-muted)] text-sm mb-4">{post.description}</p>
+                                <span className="font-medium" style={{ color: 'var(--accent)' }}>Read More →</span>
                             </div>
-                        </article>
+                        </Link>
                     ))}
                 </div>
 
@@ -63,4 +81,3 @@ export default function Blog() {
         </section>
     );
 }
-

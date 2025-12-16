@@ -15,7 +15,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body style={{ fontFamily: 'Helvetica, Arial, sans-serif' }}>
+      <body style={{ fontFamily: 'Helvetica, Arial, sans-serif' }} suppressHydrationWarning>
         <ThemeProvider>
           <Starfield />
           {children}
