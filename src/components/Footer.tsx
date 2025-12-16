@@ -28,7 +28,7 @@ export default function Footer() {
                     </div>
                 </div>
 
-                <p className="text-center text-[var(--text-muted)] text-sm">© 2025 Alex Chen. All rights reserved.</p>
+                <p className="text-center text-[var(--text-muted)] text-sm">© 2025 Sunday Samuel. All rights reserved.</p>
             </div>
         </footer>
     );

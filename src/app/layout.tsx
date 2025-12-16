@@ -4,7 +4,7 @@ import { ThemeProvider } from "@/context/ThemeContext";
 import Starfield from "@/components/Starfield";
 
 export const metadata: Metadata = {
-  title: "Alex Chen | Software Developer",
+  title: "Sunday Samuel | Software Developer",
   description: "Software Developer Portfolio - Building innovative digital solutions",
 };
 

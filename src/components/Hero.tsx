@@ -26,7 +26,7 @@ export default function Hero() {
 
             <div className="max-w-6xl mx-auto px-6 relative z-10">
                 <p className="reveal font-medium mb-2" style={{ color: 'var(--accent)' }}>Hello, I&apos;m</p>
-                <h1 className="reveal gradient-text text-5xl md:text-7xl font-bold mb-4">Alex Chen</h1>
+                <h1 className="reveal gradient-text text-5xl md:text-7xl font-bold mb-4">Sunday Samuel</h1>
                 <p className="reveal text-2xl md:text-3xl font-semibold text-[var(--text)] mb-6">Software Developer</p>
                 <p className="reveal text-lg text-[var(--text-muted)] max-w-xl mb-10">
                     I craft elegant, performant web applications and bring ideas to life through clean code and creative problem-solving.
