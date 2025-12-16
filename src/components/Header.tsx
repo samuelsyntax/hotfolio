@@ -23,7 +23,7 @@ export default function Header() {
                     ? 'flex flex-col fixed top-0 right-0 w-[70%] h-screen justify-center items-center gap-8 z-50 transition-all'
                     : 'hidden'}`}
                     style={{ background: mobileOpen ? 'var(--bg-secondary)' : 'transparent' }}>
-                    {['Skills', 'Projects', 'Blog'].map((item) => (
+                    {['Skills', 'Projects'].map((item) => (
                         <li key={item}>
                             <a href={`#${item.toLowerCase()}`}
                                 className="text-[var(--text-muted)] hover:text-[var(--accent)] font-medium transition-colors"
@@ -32,6 +32,13 @@ export default function Header() {
                             </a>
                         </li>
                     ))}
+                    <li>
+                        <Link href="/blog"
+                            className="text-[var(--text-muted)] hover:text-[var(--accent)] font-medium transition-colors"
+                            onClick={() => setMobileOpen(false)}>
+                            Blog
+                        </Link>
+                    </li>
                 </ul>
 
                 <div className="flex items-center gap-4">
