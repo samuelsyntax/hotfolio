@@ -40,24 +40,24 @@ export default function Starfield() {
         const resize = () => {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
+
+            // Regenerate star positions for the new canvas size
+            const starCount = 200;
+            starsRef.current = Array.from({ length: starCount }, () => {
+                const x = Math.random() * canvas.width;
+                const y = Math.random() * canvas.height;
+                return {
+                    x,
+                    y,
+                    z: Math.random() * 3 + 1,
+                    size: Math.random() * 2 + 0.5,
+                    baseX: x,
+                    baseY: y,
+                };
+            });
         };
         resize();
         window.addEventListener('resize', resize);
-
-        // Generate stars
-        const starCount = 200;
-        starsRef.current = Array.from({ length: starCount }, () => {
-            const x = Math.random() * canvas.width;
-            const y = Math.random() * canvas.height;
-            return {
-                x,
-                y,
-                z: Math.random() * 3 + 1,
-                size: Math.random() * 2 + 0.5,
-                baseX: x,
-                baseY: y,
-            };
-        });
 
         // Initialize shooting star
         const initShootingStar = (): ShootingStar => {
