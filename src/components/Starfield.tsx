@@ -27,6 +27,7 @@ export default function Starfield() {
     const starsRef = useRef<Star[]>([]);
     const shootingStarRef = useRef<ShootingStar | null>(null);
     const mouseRef = useRef({ x: 0, y: 0 });
+    const scrollRef = useRef(0);
     const { themeValue } = useTheme();
 
     useEffect(() => {
@@ -107,6 +108,12 @@ export default function Starfield() {
         };
         window.addEventListener('mousemove', handleMouseMove);
 
+        // Scroll tracking for parallax
+        const handleScroll = () => {
+            scrollRef.current = window.scrollY;
+        };
+        window.addEventListener('scroll', handleScroll, { passive: true });
+
         // Check collision with stars
         const checkCollision = (shootingStar: ShootingStar): Star | null => {
             for (const star of starsRef.current) {
@@ -167,8 +174,11 @@ export default function Starfield() {
                     const parallaxX = deltaX * 30 * star.z;
                     const parallaxY = deltaY * 30 * star.z;
 
+                    // Scroll parallax - stars move up at different rates
+                    const scrollParallax = scrollRef.current * (star.z * 0.15);
+
                     star.x = star.baseX - parallaxX;
-                    star.y = star.baseY - parallaxY;
+                    star.y = star.baseY - parallaxY + scrollParallax;
 
                     // Draw star with glow
                     const gradient = ctx.createRadialGradient(
@@ -278,6 +288,7 @@ export default function Starfield() {
         return () => {
             window.removeEventListener('resize', resize);
             window.removeEventListener('mousemove', handleMouseMove);
+            window.removeEventListener('scroll', handleScroll);
             cancelAnimationFrame(animationId);
         };
     }, [themeValue]);

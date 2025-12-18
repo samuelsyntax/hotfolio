@@ -160,7 +160,7 @@ export default function Skills() {
                                 {category.skills.map((skill, skillIndex) => (
                                     <div
                                         key={skill.name}
-                                        className="glass-card hover-lift p-4 rounded-xl text-center cursor-default group"
+                                        className="glass-card hover-lift shimmer-hover relative p-4 rounded-xl text-center cursor-default group"
                                         style={{
                                             transitionDelay: `${(catIndex * 100) + (skillIndex * 50)}ms`,
                                         }}
@@ -174,7 +174,7 @@ export default function Skills() {
                                         }}
                                     >
                                         <div
-                                            className="mb-3 transition-transform group-hover:scale-110 flex justify-center"
+                                            className="icon-float-hover mb-3 transition-transform group-hover:scale-110 flex justify-center"
                                             style={{ color: skill.color }}
                                         >
                                             {skill.icon}

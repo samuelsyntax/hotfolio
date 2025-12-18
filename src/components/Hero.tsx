@@ -37,7 +37,7 @@ export default function Hero() {
                     Sunday Samuel
                 </h1>
                 <p className="reveal text-2xl md:text-3xl font-semibold text-[var(--text)] mb-6 tracking-wide">
-                    Software Developer
+                    <span className="typewriter">Software Developer</span>
                 </p>
                 <p className="reveal text-lg text-[var(--text-muted)] max-w-xl mb-10 leading-relaxed">
                     I craft elegant, performant web applications and bring ideas to life through clean code and creative problem-solving.
