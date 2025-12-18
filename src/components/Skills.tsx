@@ -133,7 +133,7 @@ export default function Skills() {
     }, []);
 
     return (
-        <section ref={ref} className="py-24 bg-[var(--bg-secondary)]" id="skills">
+        <section ref={ref} className="pt-12 pb-24 bg-[var(--bg-secondary)]" id="skills">
             <div className="max-w-6xl mx-auto px-6">
                 <h2 className="reveal gradient-text-enhanced section-title text-3xl md:text-4xl font-bold text-center mb-16">
                     Skills & Technologies
