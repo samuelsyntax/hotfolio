@@ -37,18 +37,23 @@ export default function Blog() {
     return (
         <section ref={ref} className="py-24 bg-[var(--bg-secondary)]" id="blog">
             <div className="max-w-6xl mx-auto px-6">
-                <h2 className="reveal gradient-text text-3xl md:text-4xl font-bold text-center mb-16">Latest Blog Posts</h2>
+                <h2 className="reveal gradient-text-enhanced section-title text-3xl md:text-4xl font-bold text-center mb-16">
+                    Latest Blog Posts
+                </h2>
 
                 <div className="grid md:grid-cols-3 gap-8">
-                    {posts.map((post) => (
+                    {posts.map((post, index) => (
                         <Link
                             key={post.slug}
                             href={`/blog/${post.slug}`}
-                            className="reveal bg-[var(--bg-card)] rounded-2xl overflow-hidden transition-all hover:-translate-y-2 block"
-                            style={{ border: '1px solid color-mix(in srgb, var(--border) 10%, transparent)' }}
-                            onMouseEnter={(e) => { e.currentTarget.style.boxShadow = '0 8px 40px color-mix(in srgb, var(--accent) 15%, transparent)'; }}
-                            onMouseLeave={(e) => { e.currentTarget.style.boxShadow = 'none'; }}
+                            className="reveal glass-card hover-lift rounded-2xl overflow-hidden block group"
+                            style={{ transitionDelay: `${index * 100}ms` }}
                         >
+                            {/* Decorative top accent */}
+                            <div className="h-1 w-full"
+                                style={{
+                                    background: 'linear-gradient(90deg, var(--accent), color-mix(in srgb, var(--accent) 50%, transparent))'
+                                }} />
 
                             <div className="p-6">
                                 <span className="text-sm font-medium" style={{ color: 'var(--accent)' }}>
@@ -58,9 +63,15 @@ export default function Blog() {
                                         day: 'numeric'
                                     })}
                                 </span>
-                                <h3 className="text-lg font-semibold text-[var(--text)] my-2">{post.title}</h3>
-                                <p className="text-[var(--text-muted)] text-sm mb-4">{post.description}</p>
-                                <span className="font-medium" style={{ color: 'var(--accent)' }}>Read More →</span>
+                                <h3 className="text-lg font-semibold text-[var(--text)] my-2 group-hover:text-[var(--accent)] transition-colors">
+                                    {post.title}
+                                </h3>
+                                <p className="text-[var(--text-muted)] text-sm mb-4 leading-relaxed">{post.description}</p>
+                                <span className="font-medium inline-flex items-center gap-1 transition-all group-hover:gap-2"
+                                    style={{ color: 'var(--accent)' }}>
+                                    Read More
+                                    <span className="transition-transform group-hover:translate-x-1">→</span>
+                                </span>
                             </div>
                         </Link>
                     ))}
@@ -69,10 +80,21 @@ export default function Blog() {
                 <div className="reveal text-center mt-12">
                     <Link
                         href="/blog"
-                        className="inline-block px-8 py-3.5 rounded-full font-semibold border-2 text-[var(--text)] transition-all hover:-translate-y-0.5"
-                        style={{ borderColor: 'var(--accent)' }}
-                        onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--accent)'; e.currentTarget.style.color = 'var(--accent-text)'; }}
-                        onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--text)'; }}
+                        className="inline-block px-8 py-4 rounded-full font-semibold border-2 text-[var(--text)] transition-all hover:-translate-y-1 hover:shadow-lg"
+                        style={{
+                            borderColor: 'color-mix(in srgb, var(--accent) 50%, transparent)',
+                            background: 'color-mix(in srgb, var(--bg-card) 50%, transparent)'
+                        }}
+                        onMouseEnter={(e) => {
+                            e.currentTarget.style.background = 'var(--accent)';
+                            e.currentTarget.style.color = 'var(--accent-text)';
+                            e.currentTarget.style.borderColor = 'var(--accent)';
+                        }}
+                        onMouseLeave={(e) => {
+                            e.currentTarget.style.background = 'color-mix(in srgb, var(--bg-card) 50%, transparent)';
+                            e.currentTarget.style.color = 'var(--text)';
+                            e.currentTarget.style.borderColor = 'color-mix(in srgb, var(--accent) 50%, transparent)';
+                        }}
                     >
                         View All Posts
                     </Link>

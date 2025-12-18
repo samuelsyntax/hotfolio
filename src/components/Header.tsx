@@ -3,6 +3,7 @@
 import { useTheme } from '@/context/ThemeContext';
 import { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function Header() {
     const { themeValue, setThemeValue } = useTheme();
@@ -13,11 +14,23 @@ export default function Header() {
         ? `rgba(5, 5, 8, 0.85)`
         : `rgba(254, 254, 254, 0.9)`;
 
+    // Use dark logo (white) for dark mode, light logo (black) for light mode
+    const logoSrc = themeValue < 50 ? '/logo-dark.svg' : '/logo-light.svg';
+
     return (
         <header className="fixed top-0 left-0 right-0 z-50 py-4 backdrop-blur-xl border-b transition-colors"
             style={{ background: headerBg, borderColor: 'color-mix(in srgb, var(--border) 10%, transparent)' }}>
             <nav className="max-w-6xl mx-auto px-6 flex items-center justify-between">
-                <Link href="/" className="text-xl font-bold" style={{ color: 'var(--accent)' }}>{"{ SS }"}</Link>
+                {/* Frog Logo */}
+                <Link href="/" className="flex items-center gap-2 group transition-transform hover:scale-105">
+                    <Image
+                        src={logoSrc}
+                        alt="Sunday Samuel Logo"
+                        width={32}
+                        height={32}
+                        className="transition-all"
+                    />
+                </Link>
 
                 <ul className={`md:flex gap-8 list-none ${mobileOpen
                     ? 'flex flex-col fixed top-0 right-0 w-[70%] h-screen justify-center items-center gap-8 z-50 transition-all'
@@ -26,7 +39,7 @@ export default function Header() {
                     {['Skills', 'Projects'].map((item) => (
                         <li key={item}>
                             <a href={`#${item.toLowerCase()}`}
-                                className="text-[var(--text-muted)] hover:text-[var(--accent)] font-medium transition-colors"
+                                className="link-underline text-[var(--text-muted)] hover:text-[var(--text)] font-medium transition-colors"
                                 onClick={() => setMobileOpen(false)}>
                                 {item}
                             </a>
@@ -34,14 +47,14 @@ export default function Header() {
                     ))}
                     <li>
                         <Link href="/blog"
-                            className="text-[var(--text-muted)] hover:text-[var(--accent)] font-medium transition-colors"
+                            className="link-underline text-[var(--text-muted)] hover:text-[var(--text)] font-medium transition-colors"
                             onClick={() => setMobileOpen(false)}>
                             Blog
                         </Link>
                     </li>
                 </ul>
 
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-6">
                     {/* Theme Slider */}
                     <div className="flex items-center gap-2">
                         {/* Moon icon */}

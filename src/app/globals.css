@@ -15,6 +15,13 @@
   --theme-value: 0;
 }
 
+/* Hide Next.js development indicator */
+[data-nextjs-toast],
+nextjs-portal,
+#__next-build-indicator {
+  display: none !important;
+}
+
 html {
   scroll-behavior: smooth;
 }
@@ -336,4 +343,198 @@ body {
   border-radius: 12px;
   margin: 2rem 0;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+}
+
+/* ===== Enhanced Visual Utilities ===== */
+
+/* Improved gradient text with subtle shimmer */
+@keyframes gradient-shift {
+
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.gradient-text-enhanced {
+  background: linear-gradient(135deg,
+      var(--accent) 0%,
+      color-mix(in srgb, var(--accent) 70%, var(--text-muted)) 25%,
+      var(--text-muted) 50%,
+      color-mix(in srgb, var(--accent) 70%, var(--text-muted)) 75%,
+      var(--accent) 100%);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradient-shift 6s ease infinite;
+}
+
+/* Glass-morphism card effect */
+.glass-card {
+  background: color-mix(in srgb, var(--bg-card) 80%, transparent);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid color-mix(in srgb, var(--border) 15%, transparent);
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06),
+    inset 0 1px 0 0 color-mix(in srgb, var(--accent) 5%, transparent);
+}
+
+.glass-card:hover {
+  border-color: color-mix(in srgb, var(--accent) 30%, transparent);
+  box-shadow:
+    0 20px 25px -5px rgba(0, 0, 0, 0.15),
+    0 10px 10px -5px rgba(0, 0, 0, 0.08),
+    0 0 40px -10px color-mix(in srgb, var(--accent) 20%, transparent);
+}
+
+/* Button glow effect */
+@keyframes subtle-glow {
+
+  0%,
+  100% {
+    box-shadow:
+      0 4px 15px color-mix(in srgb, var(--accent) 20%, transparent),
+      0 0 0 0 color-mix(in srgb, var(--accent) 10%, transparent);
+  }
+
+  50% {
+    box-shadow:
+      0 4px 20px color-mix(in srgb, var(--accent) 30%, transparent),
+      0 0 30px -5px color-mix(in srgb, var(--accent) 15%, transparent);
+  }
+}
+
+.btn-glow {
+  animation: subtle-glow 3s ease-in-out infinite;
+}
+
+.btn-glow:hover {
+  animation: none;
+  box-shadow:
+    0 6px 25px color-mix(in srgb, var(--accent) 35%, transparent),
+    0 0 40px -5px color-mix(in srgb, var(--accent) 20%, transparent);
+}
+
+/* Enhanced section title */
+.section-title {
+  letter-spacing: 0.02em;
+  text-shadow: 0 0 40px color-mix(in srgb, var(--accent) 20%, transparent);
+}
+
+/* Floating animation for elements */
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.float-animation {
+  animation: float 6s ease-in-out infinite;
+}
+
+/* Reveal animation with scale */
+.reveal-scale {
+  opacity: 0;
+  transform: translateY(30px) scale(0.95);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.reveal-scale.active {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* Staggered reveal for children */
+.stagger-children>*:nth-child(1) {
+  transition-delay: 0ms;
+}
+
+.stagger-children>*:nth-child(2) {
+  transition-delay: 100ms;
+}
+
+.stagger-children>*:nth-child(3) {
+  transition-delay: 200ms;
+}
+
+.stagger-children>*:nth-child(4) {
+  transition-delay: 300ms;
+}
+
+.stagger-children>*:nth-child(5) {
+  transition-delay: 400ms;
+}
+
+.stagger-children>*:nth-child(6) {
+  transition-delay: 500ms;
+}
+
+.stagger-children>*:nth-child(7) {
+  transition-delay: 600ms;
+}
+
+.stagger-children>*:nth-child(8) {
+  transition-delay: 700ms;
+}
+
+.stagger-children>*:nth-child(9) {
+  transition-delay: 800ms;
+}
+
+/* Enhanced hover lift */
+.hover-lift {
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-8px);
+}
+
+/* Underline animation for links */
+.link-underline {
+  position: relative;
+}
+
+.link-underline::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--accent);
+  transition: width 0.3s ease;
+}
+
+.link-underline:hover::after {
+  width: 100%;
+}
+
+/* Logo styling */
+.logo-text {
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--text) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  transition: all 0.3s ease;
+}
+
+.logo-text:hover {
+  filter: brightness(1.2);
+  text-shadow: 0 0 20px color-mix(in srgb, var(--accent) 40%, transparent);
 }

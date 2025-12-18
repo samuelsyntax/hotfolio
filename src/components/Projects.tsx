@@ -30,50 +30,70 @@ export default function Projects() {
     return (
         <section ref={ref} className="py-24" id="projects">
             <div className="max-w-6xl mx-auto px-6">
-                <h2 className="reveal gradient-text text-3xl md:text-4xl font-bold text-center mb-16">Featured Projects</h2>
+                <h2 className="reveal gradient-text-enhanced section-title text-3xl md:text-4xl font-bold text-center mb-16">
+                    Featured Projects
+                </h2>
 
                 <div className="reveal flex justify-center gap-3 mb-12 flex-wrap">
                     {['all', 'web', 'mobile', 'api'].map((f) => (
                         <button key={f} onClick={() => setFilter(f)}
-                            className={`px-6 py-2.5 rounded-full font-medium transition-all ${filter === f
-                                ? '' : 'text-[var(--text-muted)]'}`}
+                            className={`px-6 py-2.5 rounded-full font-medium transition-all duration-300 ${filter === f
+                                ? 'shadow-lg' : 'hover:text-[var(--text)]'}`}
                             style={filter === f
-                                ? { background: 'var(--accent)', color: 'var(--accent-text)' }
-                                : { border: '1px solid color-mix(in srgb, var(--border) 30%, transparent)' }}
-                            onMouseEnter={(e) => { if (filter !== f) e.currentTarget.style.borderColor = 'var(--border)'; }}
-                            onMouseLeave={(e) => { if (filter !== f) e.currentTarget.style.borderColor = 'color-mix(in srgb, var(--border) 30%, transparent)'; }}>
+                                ? {
+                                    background: 'var(--accent)',
+                                    color: 'var(--accent-text)',
+                                    boxShadow: '0 4px 20px color-mix(in srgb, var(--accent) 30%, transparent)'
+                                }
+                                : {
+                                    border: '1px solid color-mix(in srgb, var(--text-muted) 50%, transparent)',
+                                    background: 'color-mix(in srgb, var(--bg-card) 70%, transparent)',
+                                    color: 'var(--text-muted)'
+                                }}
+                            onMouseEnter={(e) => { if (filter !== f) { e.currentTarget.style.borderColor = 'var(--text)'; e.currentTarget.style.color = 'var(--text)'; } }}
+                            onMouseLeave={(e) => { if (filter !== f) { e.currentTarget.style.borderColor = 'color-mix(in srgb, var(--text-muted) 50%, transparent)'; e.currentTarget.style.color = 'var(--text-muted)'; } }}>
                             {f === 'all' ? 'All' : f === 'web' ? 'Web Apps' : f === 'mobile' ? 'Mobile' : 'APIs'}
                         </button>
                     ))}
                 </div>
 
                 <div className="grid md:grid-cols-2 gap-8">
-                    {filtered.map((project) => (
+                    {filtered.map((project, index) => (
                         <article key={project.id}
-                            className="reveal bg-[var(--bg-card)] rounded-2xl overflow-hidden transition-all hover:-translate-y-2"
-                            style={{ border: '1px solid color-mix(in srgb, var(--border) 10%, transparent)' }}
-                            onMouseEnter={(e) => { e.currentTarget.style.boxShadow = '0 8px 40px color-mix(in srgb, var(--accent) 15%, transparent)'; }}
-                            onMouseLeave={(e) => { e.currentTarget.style.boxShadow = 'none'; }}>
-                            <div className="h-48 flex items-center justify-center text-2xl font-bold"
-                                style={{ background: 'var(--accent)', color: 'var(--accent-text)' }}>
-                                {project.title.split(' ')[0]}
+                            className="reveal glass-card hover-lift rounded-2xl overflow-hidden"
+                            style={{ transitionDelay: `${index * 100}ms` }}>
+                            <div className="h-48 flex items-center justify-center text-2xl font-bold relative overflow-hidden"
+                                style={{
+                                    background: 'linear-gradient(135deg, var(--accent) 0%, color-mix(in srgb, var(--accent) 70%, var(--bg)) 100%)',
+                                    color: 'var(--accent-text)'
+                                }}>
+                                <span className="relative z-10">{project.title.split(' ')[0]}</span>
+                                {/* Decorative elements */}
+                                <div className="absolute inset-0 opacity-20"
+                                    style={{
+                                        background: 'radial-gradient(circle at 80% 20%, white 0%, transparent 50%)'
+                                    }} />
                             </div>
                             <div className="p-6">
                                 <h3 className="text-xl font-semibold text-[var(--text)] mb-3">{project.title}</h3>
-                                <p className="text-[var(--text-muted)] mb-4">{project.desc}</p>
+                                <p className="text-[var(--text-muted)] mb-4 leading-relaxed">{project.desc}</p>
                                 <div className="flex flex-wrap gap-2 mb-4">
                                     {project.tags.map((tag) => (
-                                        <span key={tag} className="px-3 py-1 rounded-full text-sm font-medium"
-                                            style={{ background: 'color-mix(in srgb, var(--accent) 10%, transparent)', color: 'var(--text-muted)' }}>{tag}</span>
+                                        <span key={tag} className="px-3 py-1 rounded-full text-sm font-medium transition-colors"
+                                            style={{
+                                                background: 'color-mix(in srgb, var(--accent) 15%, transparent)',
+                                                color: 'var(--text)',
+                                                border: '1px solid color-mix(in srgb, var(--accent) 40%, transparent)'
+                                            }}>{tag}</span>
                                     ))}
                                 </div>
                                 <div className="flex gap-4">
-                                    <a href="#" className="font-medium transition-colors" style={{ color: 'var(--accent)' }}
-                                        onMouseEnter={(e) => { e.currentTarget.style.opacity = '0.7'; }}
-                                        onMouseLeave={(e) => { e.currentTarget.style.opacity = '1'; }}>Live Demo →</a>
-                                    <a href="#" className="font-medium transition-colors" style={{ color: 'var(--accent)' }}
-                                        onMouseEnter={(e) => { e.currentTarget.style.opacity = '0.7'; }}
-                                        onMouseLeave={(e) => { e.currentTarget.style.opacity = '1'; }}>GitHub →</a>
+                                    <a href="#" className="link-underline font-medium transition-colors" style={{ color: 'var(--accent)' }}>
+                                        Live Demo →
+                                    </a>
+                                    <a href="#" className="link-underline font-medium transition-colors" style={{ color: 'var(--accent)' }}>
+                                        GitHub →
+                                    </a>
                                 </div>
                             </div>
                         </article>
