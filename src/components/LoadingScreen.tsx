@@ -47,6 +47,34 @@ export default function LoadingScreen() {
         let coreSize = 2;
         let coreOpacity = 0;
 
+        // Track if page content is ready (loaded + hydrated)
+        let contentReady = false;
+        let animationReachedEnd = false;
+
+        function checkContentReady() {
+            if (document.readyState === 'complete') {
+                // Give React an extra frame to hydrate
+                requestAnimationFrame(() => {
+                    contentReady = true;
+                    // If animation already finished, trigger fade immediately
+                    if (animationReachedEnd && !animationComplete) {
+                        startFadeOut();
+                    }
+                });
+            } else {
+                // Wait for load event
+                window.addEventListener('load', () => {
+                    requestAnimationFrame(() => {
+                        contentReady = true;
+                        if (animationReachedEnd && !animationComplete) {
+                            startFadeOut();
+                        }
+                    });
+                }, { once: true });
+            }
+        }
+        checkContentReady();
+
         function createParticle(speed: number, size: number) {
             const angle = Math.random() * Math.PI * 2;
             const velocity = speed * (0.5 + Math.random() * 0.5);
@@ -220,10 +248,16 @@ export default function LoadingScreen() {
                 ctx.globalAlpha = 1;
             }
 
-            // Animation complete check: start fade based on device performance
-            // Mobile: frame 120, Desktop: frame 150
+            // Animation complete check: start fade when BOTH conditions are met:
+            // 1. Animation has reached the fade point
+            // 2. Page content is ready (loaded + hydrated)
             if (time >= fadeStartFrame && !animationComplete) {
-                startFadeOut();
+                animationReachedEnd = true;
+                // Only fade if content is also ready
+                if (contentReady) {
+                    startFadeOut();
+                }
+                // If content not ready, checkContentReady() will trigger fade when ready
             }
 
             if (!animationComplete) {
