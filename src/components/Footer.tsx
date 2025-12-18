@@ -7,7 +7,7 @@ export default function Footer() {
         <footer className="py-16 border-t" style={{ borderColor: 'color-mix(in srgb, var(--border) 10%, transparent)' }}>
             <div className="max-w-6xl mx-auto px-6">
                 <div className="flex justify-between items-center mb-8 flex-wrap gap-6">
-                    <Link href="/" className="text-xl font-bold" style={{ color: 'var(--accent)' }}>{"{ AC }"}</Link>
+                    <Link href="/" className="text-xl font-bold" style={{ color: 'var(--accent)' }}>{"{ SS }"}</Link>
 
                     <div className="flex gap-4">
                         {[

@@ -17,7 +17,7 @@ export default function Header() {
         <header className="fixed top-0 left-0 right-0 z-50 py-4 backdrop-blur-xl border-b transition-colors"
             style={{ background: headerBg, borderColor: 'color-mix(in srgb, var(--border) 10%, transparent)' }}>
             <nav className="max-w-6xl mx-auto px-6 flex items-center justify-between">
-                <Link href="/" className="text-xl font-bold" style={{ color: 'var(--accent)' }}>{"{ AC }"}</Link>
+                <Link href="/" className="text-xl font-bold" style={{ color: 'var(--accent)' }}>{"{ SS }"}</Link>
 
                 <ul className={`md:flex gap-8 list-none ${mobileOpen
                     ? 'flex flex-col fixed top-0 right-0 w-[70%] h-screen justify-center items-center gap-8 z-50 transition-all'
