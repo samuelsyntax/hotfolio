@@ -14,8 +14,9 @@ interface Particle {
 
 export default function LoadingScreen() {
     const [isLoading, setIsLoading] = useState(true);
-    const [isFading, setIsFading] = useState(false);
+    const [fadeOpacity, setFadeOpacity] = useState(1);
     const canvasRef = useRef<HTMLCanvasElement>(null);
+    const fadeAnimationRef = useRef<number | null>(null);
 
     useEffect(() => {
         const canvas = canvasRef.current;
@@ -183,18 +184,34 @@ export default function LoadingScreen() {
 
         animate();
 
+        // Use RAF-based fade animation for smooth mobile experience
         const fadeTimer = setTimeout(() => {
-            setIsFading(true);
-        }, 2800);
+            const fadeDuration = 500; // ms
+            const startTime = performance.now();
 
-        const removeTimer = setTimeout(() => {
-            setIsLoading(false);
-        }, 3300);
+            function animateFade(currentTime: number) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / fadeDuration, 1);
+                // Use ease-out curve for smoother fade
+                const easeOut = 1 - Math.pow(1 - progress, 3);
+                setFadeOpacity(1 - easeOut);
+
+                if (progress < 1) {
+                    fadeAnimationRef.current = requestAnimationFrame(animateFade);
+                } else {
+                    setIsLoading(false);
+                }
+            }
+
+            fadeAnimationRef.current = requestAnimationFrame(animateFade);
+        }, 2800);
 
         return () => {
             cancelAnimationFrame(animationId);
+            if (fadeAnimationRef.current) {
+                cancelAnimationFrame(fadeAnimationRef.current);
+            }
             clearTimeout(fadeTimer);
-            clearTimeout(removeTimer);
         };
     }, []);
 
@@ -202,9 +219,12 @@ export default function LoadingScreen() {
 
     return (
         <div
-            className={`fixed inset-0 z-[9999] transition-opacity duration-500 ${isFading ? 'opacity-0 pointer-events-none' : 'opacity-100'
-                }`}
-            style={{ background: 'rgb(5, 5, 8)' }}
+            className="fixed inset-0 z-[9999]"
+            style={{
+                background: 'rgb(5, 5, 8)',
+                opacity: fadeOpacity,
+                pointerEvents: fadeOpacity < 0.1 ? 'none' : 'auto',
+            }}
         >
             <canvas ref={canvasRef} className="w-full h-full" />
         </div>
