@@ -212,9 +212,9 @@ export default function LoadingScreen() {
                 ctx.globalAlpha = 1;
             }
 
-            // Animation complete check: ring done (frame 140), stars at full opacity (frame 180), 
-            // and most particles faded. Trigger fade at frame 180 for smooth transition.
-            if (time >= 180 && !animationComplete) {
+            // Animation complete check: ring done (frame 140), start fade shortly after
+            // to eliminate the pause between animation and content reveal.
+            if (time >= 150 && !animationComplete) {
                 startFadeOut();
             }
 
