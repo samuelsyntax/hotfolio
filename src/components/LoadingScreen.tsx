@@ -14,13 +14,14 @@ interface Particle {
 
 export default function LoadingScreen() {
     const [isLoading, setIsLoading] = useState(true);
-    const [fadeOpacity, setFadeOpacity] = useState(1);
     const canvasRef = useRef<HTMLCanvasElement>(null);
+    const containerRef = useRef<HTMLDivElement>(null);
     const fadeAnimationRef = useRef<number | null>(null);
 
     useEffect(() => {
         const canvas = canvasRef.current;
-        if (!canvas) return;
+        const container = containerRef.current;
+        if (!canvas || !container) return;
 
         const ctx = canvas.getContext('2d');
         if (!ctx) return;
@@ -53,6 +54,42 @@ export default function LoadingScreen() {
         }
 
         let animationId: number;
+        let animationComplete = false;
+
+        function startFadeOut() {
+            if (animationComplete) return;
+            animationComplete = true;
+
+            const fadeDuration = 600; // Slightly longer for smoother transition
+            const startTime = performance.now();
+
+            function animateFade(currentTime: number) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / fadeDuration, 1);
+                // Use ease-in-out curve for smoother fade
+                const easeInOut = progress < 0.5
+                    ? 2 * progress * progress
+                    : 1 - Math.pow(-2 * progress + 2, 2) / 2;
+                const opacity = 1 - easeInOut;
+
+                // Direct DOM manipulation - no React re-render
+                if (container) {
+                    container.style.opacity = String(opacity);
+                    if (opacity < 0.1) {
+                        container.style.pointerEvents = 'none';
+                    }
+                }
+
+                if (progress < 1) {
+                    fadeAnimationRef.current = requestAnimationFrame(animateFade);
+                } else {
+                    cancelAnimationFrame(animationId);
+                    setIsLoading(false);
+                }
+            }
+
+            fadeAnimationRef.current = requestAnimationFrame(animateFade);
+        }
 
         function animate() {
             if (!ctx || !canvas) return;
@@ -175,7 +212,15 @@ export default function LoadingScreen() {
                 ctx.globalAlpha = 1;
             }
 
-            animationId = requestAnimationFrame(animate);
+            // Animation complete check: ring done (frame 140), stars at full opacity (frame 180), 
+            // and most particles faded. Trigger fade at frame 180 for smooth transition.
+            if (time >= 180 && !animationComplete) {
+                startFadeOut();
+            }
+
+            if (!animationComplete) {
+                animationId = requestAnimationFrame(animate);
+            }
         }
 
         // Initial black fill
@@ -184,34 +229,11 @@ export default function LoadingScreen() {
 
         animate();
 
-        // Use RAF-based fade animation for smooth mobile experience
-        const fadeTimer = setTimeout(() => {
-            const fadeDuration = 500; // ms
-            const startTime = performance.now();
-
-            function animateFade(currentTime: number) {
-                const elapsed = currentTime - startTime;
-                const progress = Math.min(elapsed / fadeDuration, 1);
-                // Use ease-out curve for smoother fade
-                const easeOut = 1 - Math.pow(1 - progress, 3);
-                setFadeOpacity(1 - easeOut);
-
-                if (progress < 1) {
-                    fadeAnimationRef.current = requestAnimationFrame(animateFade);
-                } else {
-                    setIsLoading(false);
-                }
-            }
-
-            fadeAnimationRef.current = requestAnimationFrame(animateFade);
-        }, 2800);
-
         return () => {
             cancelAnimationFrame(animationId);
             if (fadeAnimationRef.current) {
                 cancelAnimationFrame(fadeAnimationRef.current);
             }
-            clearTimeout(fadeTimer);
         };
     }, []);
 
@@ -219,11 +241,12 @@ export default function LoadingScreen() {
 
     return (
         <div
+            ref={containerRef}
             className="fixed inset-0 z-[9999]"
             style={{
                 background: 'rgb(5, 5, 8)',
-                opacity: fadeOpacity,
-                pointerEvents: fadeOpacity < 0.1 ? 'none' : 'auto',
+                willChange: 'opacity',
+                transform: 'translate3d(0, 0, 0)', // Force GPU layer
             }}
         >
             <canvas ref={canvasRef} className="w-full h-full" />
