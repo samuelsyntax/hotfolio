@@ -39,14 +39,24 @@ export default function LoadingScreen() {
         let time = 0;
         let explosionTriggered = false;
 
-        // AGGRESSIVE mobile optimization: much fewer particles and simpler rendering
-        const particleCount = isMobile ? 30 : 150;
-        const secondaryParticleCount = isMobile ? 2 : 10;
-        const starCount = isMobile ? 10 : 50;
-        const fadeStartFrame = isMobile ? 90 : 150; // Much faster on mobile
-        const skipGradients = isMobile; // Skip expensive gradient calculations on mobile
+        // Balanced mobile optimization: good visuals + smooth performance
+        const particleCount = isMobile ? 50 : 150;
+        const secondaryParticleCount = isMobile ? 3 : 10;
+        const starCount = isMobile ? 15 : 50;
+        const fadeStartFrame = isMobile ? 110 : 150;
         let coreSize = 2;
         let coreOpacity = 0;
+
+        // Pre-calculate star positions once (avoid recalculating every frame)
+        const stars: { x: number; y: number; size: number }[] = [];
+        for (let i = 0; i < starCount; i++) {
+            const seed = i * 9973;
+            stars.push({
+                x: seed % canvas.width,
+                y: (seed * 7) % canvas.height,
+                size: ((seed % 10) / 10) * 1.5 + 0.5,
+            });
+        }
 
         // Track if page content is ready (loaded + hydrated)
         let contentReady = false;
@@ -54,16 +64,13 @@ export default function LoadingScreen() {
 
         function checkContentReady() {
             if (document.readyState === 'complete') {
-                // Give React an extra frame to hydrate
                 requestAnimationFrame(() => {
                     contentReady = true;
-                    // If animation already finished, trigger fade immediately
                     if (animationReachedEnd && !animationComplete) {
                         startFadeOut();
                     }
                 });
             } else {
-                // Wait for load event
                 window.addEventListener('load', () => {
                     requestAnimationFrame(() => {
                         contentReady = true;
@@ -87,7 +94,7 @@ export default function LoadingScreen() {
                 vy: Math.sin(angle) * velocity,
                 size: size * (0.3 + Math.random() * 0.7),
                 alpha: 0.8 + Math.random() * 0.2,
-                decay: isMobile ? 0.015 + Math.random() * 0.02 : 0.005 + Math.random() * 0.01, // Faster decay on mobile
+                decay: isMobile ? 0.008 + Math.random() * 0.012 : 0.005 + Math.random() * 0.01,
             });
         }
 
@@ -98,19 +105,17 @@ export default function LoadingScreen() {
             if (animationComplete) return;
             animationComplete = true;
 
-            const fadeDuration = isMobile ? 400 : 600; // Faster fade on mobile
+            const fadeDuration = isMobile ? 500 : 600;
             const startTime = performance.now();
 
             function animateFade(currentTime: number) {
                 const elapsed = currentTime - startTime;
                 const progress = Math.min(elapsed / fadeDuration, 1);
-                // Use ease-in-out curve for smoother fade
                 const easeInOut = progress < 0.5
                     ? 2 * progress * progress
                     : 1 - Math.pow(-2 * progress + 2, 2) / 2;
                 const opacity = 1 - easeInOut;
 
-                // Direct DOM manipulation - no React re-render
                 if (container) {
                     container.style.opacity = String(opacity);
                     if (opacity < 0.1) {
@@ -134,52 +139,53 @@ export default function LoadingScreen() {
 
             time++;
 
-            // Faster fade for trails on mobile
-            ctx.fillStyle = isMobile ? 'rgba(5, 5, 8, 0.2)' : 'rgba(5, 5, 8, 0.12)';
+            // Trail fade
+            ctx.fillStyle = isMobile ? 'rgba(5, 5, 8, 0.15)' : 'rgba(5, 5, 8, 0.12)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // Phase 1: Core builds up (0-60 frames, shorter on mobile)
-            const coreEndFrame = isMobile ? 40 : 60;
-            if (time < coreEndFrame) {
-                coreOpacity = Math.min(1, time / (coreEndFrame * 0.67));
-                coreSize = 2 + (time / coreEndFrame) * 3;
+            // Phase 1: Core builds up
+            if (time < 60) {
+                coreOpacity = Math.min(1, time / 40);
+                coreSize = 2 + (time / 60) * 3;
             }
 
             // Phase 2: Explosion
-            const explosionFrame = isMobile ? 40 : 60;
-            if (time === explosionFrame && !explosionTriggered) {
+            if (time === 60 && !explosionTriggered) {
                 explosionTriggered = true;
-                // Create initial burst
                 for (let i = 0; i < particleCount; i++) {
                     createParticle(3 + Math.random() * 6, 1 + Math.random() * 1.5);
                 }
             }
 
-            // Phase 3: Continued expansion (shorter on mobile)
-            const expansionEnd = isMobile ? 70 : 120;
-            if (time > explosionFrame && time < expansionEnd && time % (isMobile ? 5 : 3) === 0) {
+            // Phase 3: Continued expansion
+            if (time > 60 && time < 120 && time % (isMobile ? 4 : 3) === 0) {
                 for (let i = 0; i < secondaryParticleCount; i++) {
                     createParticle(2 + Math.random() * 4, 0.5 + Math.random());
                 }
             }
 
-            // Draw core glow - SKIP gradients on mobile for performance
-            if (coreOpacity > 0 && time < (isMobile ? 70 : 100)) {
-                const fadeOut = time > explosionFrame ? Math.max(0, 1 - (time - explosionFrame) / 40) : 1;
+            // Draw core glow - optimized for mobile with layered circles instead of gradients
+            if (coreOpacity > 0 && time < 100) {
+                const fadeOut = time > 60 ? Math.max(0, 1 - (time - 60) / 40) : 1;
 
-                if (skipGradients) {
-                    // Simple solid circles instead of gradients on mobile
-                    ctx.fillStyle = `rgba(255, 255, 255, ${0.3 * coreOpacity * fadeOut})`;
-                    ctx.beginPath();
-                    ctx.arc(centerX, centerY, coreSize * 8, 0, Math.PI * 2);
-                    ctx.fill();
+                if (isMobile) {
+                    // Layered circles simulate gradient effect without the performance cost
+                    const layers = [
+                        { radius: coreSize * 15, alpha: 0.08 },
+                        { radius: coreSize * 10, alpha: 0.12 },
+                        { radius: coreSize * 6, alpha: 0.2 },
+                        { radius: coreSize * 3, alpha: 0.4 },
+                        { radius: coreSize * 1.5, alpha: 0.7 },
+                    ];
 
-                    ctx.fillStyle = `rgba(255, 255, 255, ${0.6 * coreOpacity * fadeOut})`;
-                    ctx.beginPath();
-                    ctx.arc(centerX, centerY, coreSize * 2, 0, Math.PI * 2);
-                    ctx.fill();
+                    for (const layer of layers) {
+                        ctx.fillStyle = `rgba(255, 255, 255, ${layer.alpha * coreOpacity * fadeOut})`;
+                        ctx.beginPath();
+                        ctx.arc(centerX, centerY, layer.radius, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
                 } else {
-                    // Outer glow with gradient (desktop only)
+                    // Full gradient effect on desktop
                     const outerGlow = ctx.createRadialGradient(
                         centerX, centerY, 0,
                         centerX, centerY, coreSize * 20
@@ -193,7 +199,6 @@ export default function LoadingScreen() {
                     ctx.fillStyle = outerGlow;
                     ctx.fill();
 
-                    // Inner core
                     const innerGlow = ctx.createRadialGradient(
                         centerX, centerY, 0,
                         centerX, centerY, coreSize * 3
@@ -209,10 +214,9 @@ export default function LoadingScreen() {
                 }
             }
 
-            // Draw expanding ring (simpler on mobile)
-            const ringEnd = isMobile ? 90 : 140;
-            if (time > explosionFrame && time < ringEnd) {
-                const ringProgress = (time - explosionFrame) / (ringEnd - explosionFrame);
+            // Draw expanding ring
+            if (time > 60 && time < 140) {
+                const ringProgress = (time - 60) / 80;
                 const ringRadius = ringProgress * Math.max(canvas.width, canvas.height) * 0.8;
                 const ringOpacity = Math.max(0, 0.3 * (1 - ringProgress));
 
@@ -238,46 +242,36 @@ export default function LoadingScreen() {
                     continue;
                 }
 
-                // Simple dot
                 ctx.beginPath();
                 ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
                 ctx.fillStyle = `rgba(255, 255, 255, ${p.alpha})`;
                 ctx.fill();
             }
 
-            // Ambient stars that fade in (minimal on mobile)
-            const starsStartFrame = isMobile ? 50 : 80;
-            if (time > starsStartFrame && !isMobile) {
-                // Skip stars entirely on mobile for performance
-                const starOpacity = Math.min(0.4, (time - starsStartFrame) / 100);
-                ctx.fillStyle = `rgba(255, 255, 255, ${starOpacity * 0.3})`;
+            // Ambient stars - static on mobile (no twinkle), animated on desktop
+            if (time > 80) {
+                const starOpacity = Math.min(0.4, (time - 80) / 100);
 
-                // Fixed star positions based on canvas size
-                for (let i = 0; i < starCount; i++) {
-                    const seed = i * 9973;
-                    const sx = (seed % canvas.width);
-                    const sy = ((seed * 7) % canvas.height);
-                    const sSize = ((seed % 10) / 10) * 1.5 + 0.5;
-                    const twinkle = Math.sin(time * 0.05 + i) * 0.3 + 0.7;
+                for (let i = 0; i < stars.length; i++) {
+                    const star = stars[i];
+                    // Simple twinkle on desktop, static on mobile
+                    const twinkle = isMobile ? 0.85 : Math.sin(time * 0.05 + i) * 0.3 + 0.7;
 
                     ctx.globalAlpha = starOpacity * twinkle;
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
                     ctx.beginPath();
-                    ctx.arc(sx, sy, sSize, 0, Math.PI * 2);
+                    ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
                     ctx.fill();
                 }
                 ctx.globalAlpha = 1;
             }
 
-            // Animation complete check: start fade when BOTH conditions are met:
-            // 1. Animation has reached the fade point
-            // 2. Page content is ready (loaded + hydrated)
+            // Animation complete check
             if (time >= fadeStartFrame && !animationComplete) {
                 animationReachedEnd = true;
-                // Only fade if content is also ready
                 if (contentReady) {
                     startFadeOut();
                 }
-                // If content not ready, checkContentReady() will trigger fade when ready
             }
 
             if (!animationComplete) {
@@ -308,7 +302,7 @@ export default function LoadingScreen() {
             style={{
                 background: 'rgb(5, 5, 8)',
                 willChange: 'opacity',
-                transform: 'translate3d(0, 0, 0)', // Force GPU layer
+                transform: 'translate3d(0, 0, 0)',
             }}
         >
             <canvas ref={canvasRef} className="w-full h-full" />
