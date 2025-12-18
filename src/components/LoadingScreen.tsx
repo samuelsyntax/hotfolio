@@ -26,6 +26,9 @@ export default function LoadingScreen() {
         const ctx = canvas.getContext('2d');
         if (!ctx) return;
 
+        // Detect mobile for performance optimizations
+        const isMobile = window.innerWidth < 768 || /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
 
@@ -35,6 +38,12 @@ export default function LoadingScreen() {
         const particles: Particle[] = [];
         let time = 0;
         let explosionTriggered = false;
+
+        // Performance settings based on device
+        const particleCount = isMobile ? 60 : 150;
+        const secondaryParticleCount = isMobile ? 4 : 10;
+        const starCount = isMobile ? 20 : 50;
+        const fadeStartFrame = isMobile ? 120 : 150;
         let coreSize = 2;
         let coreOpacity = 0;
 
@@ -110,14 +119,14 @@ export default function LoadingScreen() {
             if (time === 60 && !explosionTriggered) {
                 explosionTriggered = true;
                 // Create initial burst
-                for (let i = 0; i < 150; i++) {
+                for (let i = 0; i < particleCount; i++) {
                     createParticle(3 + Math.random() * 6, 1 + Math.random() * 1.5);
                 }
             }
 
             // Phase 3: Continued expansion
             if (time > 60 && time < 120 && time % 3 === 0) {
-                for (let i = 0; i < 10; i++) {
+                for (let i = 0; i < secondaryParticleCount; i++) {
                     createParticle(2 + Math.random() * 4, 0.5 + Math.random());
                 }
             }
@@ -196,7 +205,6 @@ export default function LoadingScreen() {
                 ctx.fillStyle = `rgba(255, 255, 255, ${starOpacity * 0.3})`;
 
                 // Fixed star positions based on canvas size
-                const starCount = 50;
                 for (let i = 0; i < starCount; i++) {
                     const seed = i * 9973;
                     const sx = (seed % canvas.width);
@@ -212,9 +220,9 @@ export default function LoadingScreen() {
                 ctx.globalAlpha = 1;
             }
 
-            // Animation complete check: ring done (frame 140), start fade shortly after
-            // to eliminate the pause between animation and content reveal.
-            if (time >= 150 && !animationComplete) {
+            // Animation complete check: start fade based on device performance
+            // Mobile: frame 120, Desktop: frame 150
+            if (time >= fadeStartFrame && !animationComplete) {
                 startFadeOut();
             }
 
