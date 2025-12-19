@@ -86,25 +86,23 @@ export function ProjectCard({ project, index }: { project: Project; index: numbe
                         />
                     </div>
 
-                    {/* Project title in banner */}
+                    {/* Project title in banner - show short memorable word */}
                     <div className="relative z-10 text-center px-6">
                         <div
-                            className="text-4xl md:text-5xl font-bold text-white mb-2 transition-transform duration-500"
+                            className="text-4xl md:text-5xl font-bold text-white transition-transform duration-500"
                             style={{
                                 textShadow: '0 4px 20px rgba(0,0,0,0.3)',
                                 transform: isHovered ? 'translateY(-5px)' : 'translateY(0)'
                             }}
                         >
-                            {project.title.split(' ')[0]}
-                        </div>
-                        <div
-                            className="text-white/70 text-sm font-medium uppercase tracking-widest transition-all duration-500"
-                            style={{
-                                opacity: isHovered ? 1 : 0.7,
-                                transform: isHovered ? 'translateY(-3px)' : 'translateY(0)'
-                            }}
-                        >
-                            {project.category === 'web' ? 'Web App' : project.category === 'mobile' ? 'Mobile' : 'API'}
+                            {/* Use a better display name - avoid redundancy with category */}
+                            {project.title.includes('E-Commerce') ? 'Shop' :
+                                project.title.includes('API') ? 'Gateway' :
+                                    project.title.includes('Fitness') ? 'Fitness' :
+                                        project.title.includes('Analytics') ? 'Analytics' :
+                                            project.title.includes('Task') ? 'Tasks' :
+                                                project.title.includes('Weather') ? 'Weather' :
+                                                    project.title.split(' ')[0]}
                         </div>
                     </div>
 
@@ -120,7 +118,7 @@ export function ProjectCard({ project, index }: { project: Project; index: numbe
 
                 {/* Enhanced Project Content */}
                 <div className="relative p-8 flex-1 flex flex-col justify-center">
-                    {/* Category badge */}
+                    {/* Category badge - more descriptive label */}
                     <div
                         className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider mb-4 w-fit transition-all duration-300"
                         style={{
@@ -130,7 +128,7 @@ export function ProjectCard({ project, index }: { project: Project; index: numbe
                         }}
                     >
                         <span className="w-1.5 h-1.5 rounded-full" style={{ background: colors.from }} />
-                        {project.category}
+                        {project.category === 'web' ? 'Web App' : project.category === 'mobile' ? 'Mobile App' : 'Backend API'}
                     </div>
 
                     <h3
