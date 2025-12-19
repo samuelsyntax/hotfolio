@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
+import { BookOpen, ArrowRight } from 'lucide-react';
 
 interface BlogPost {
     slug: string;
@@ -67,10 +68,11 @@ export default function Blog() {
                                     {post.title}
                                 </h3>
                                 <p className="text-[var(--text-muted)] text-sm mb-4 leading-relaxed">{post.description}</p>
-                                <span className="font-medium inline-flex items-center gap-1 transition-all group-hover:gap-2"
+                                <span className="font-medium inline-flex items-center gap-2 transition-all group-hover:gap-3"
                                     style={{ color: 'var(--accent)' }}>
+                                    <BookOpen className="w-4 h-4" />
                                     Read More
-                                    <span className="transition-transform group-hover:translate-x-1">→</span>
+                                    <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
                                 </span>
                             </div>
                         </Link>
@@ -80,7 +82,7 @@ export default function Blog() {
                 <div className="reveal text-center mt-12">
                     <Link
                         href="/blog"
-                        className="inline-block px-8 py-4 rounded-full font-semibold border-2 text-[var(--text)] transition-all hover:-translate-y-1 hover:shadow-lg"
+                        className="group inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full font-semibold border-2 text-[var(--text)] transition-all hover:-translate-y-1 hover:shadow-lg"
                         style={{
                             borderColor: 'color-mix(in srgb, var(--accent) 50%, transparent)',
                             background: 'color-mix(in srgb, var(--bg-card) 50%, transparent)'
@@ -97,6 +99,7 @@ export default function Blog() {
                         }}
                     >
                         View All Posts
+                        <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
                     </Link>
                 </div>
             </div>

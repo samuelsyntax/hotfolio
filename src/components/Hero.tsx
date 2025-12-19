@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import { Briefcase, Sparkles } from 'lucide-react';
 
 export default function Hero() {
     const ref = useRef<HTMLDivElement>(null);
@@ -44,15 +45,16 @@ export default function Hero() {
                 </p>
                 <div className="reveal flex flex-col sm:flex-row gap-4 sm:gap-5">
                     <a href="#projects"
-                        className="btn-glow px-8 py-4 rounded-full font-semibold transition-all hover:-translate-y-1 text-center"
+                        className="btn-glow group px-8 py-4 rounded-full font-semibold transition-all hover:-translate-y-1 text-center flex items-center justify-center gap-2"
                         style={{
                             background: 'var(--accent)',
                             color: 'var(--accent-text)'
                         }}>
+                        <Briefcase className="w-5 h-5 transition-transform group-hover:scale-110" />
                         View My Work
                     </a>
                     <a href="#skills"
-                        className="group px-8 py-4 rounded-full font-semibold border-2 text-[var(--text)] transition-all hover:-translate-y-1 hover:shadow-lg text-center"
+                        className="group px-8 py-4 rounded-full font-semibold border-2 text-[var(--text)] transition-all hover:-translate-y-1 hover:shadow-lg text-center flex items-center justify-center gap-2"
                         style={{
                             borderColor: 'color-mix(in srgb, var(--accent) 50%, transparent)'
                         }}
@@ -66,6 +68,7 @@ export default function Hero() {
                             e.currentTarget.style.color = 'var(--text)';
                             e.currentTarget.style.borderColor = 'color-mix(in srgb, var(--accent) 50%, transparent)';
                         }}>
+                        <Sparkles className="w-5 h-5 transition-transform group-hover:rotate-12" />
                         My Skills
                     </a>
                 </div>

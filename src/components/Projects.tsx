@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { LayoutGrid, Globe, Smartphone, Server, ExternalLink, Github } from 'lucide-react';
 
 const projects = [
     { id: 1, category: 'web', title: 'E-Commerce Platform', desc: 'Full-stack shopping platform with real-time inventory and payment processing.', tags: ['React', 'Node.js', 'MongoDB'] },
@@ -35,11 +36,16 @@ export default function Projects() {
                 </h2>
 
                 <div className="reveal flex justify-center gap-3 mb-12 flex-wrap">
-                    {['all', 'web', 'mobile', 'api'].map((f) => (
-                        <button key={f} onClick={() => setFilter(f)}
-                            className={`px-6 py-2.5 rounded-full font-medium transition-all duration-300 ${filter === f
+                    {[
+                        { key: 'all', label: 'All', icon: LayoutGrid },
+                        { key: 'web', label: 'Web Apps', icon: Globe },
+                        { key: 'mobile', label: 'Mobile', icon: Smartphone },
+                        { key: 'api', label: 'APIs', icon: Server }
+                    ].map(({ key, label, icon: Icon }) => (
+                        <button key={key} onClick={() => setFilter(key)}
+                            className={`flex items-center gap-2 px-6 py-2.5 rounded-full font-medium transition-all duration-300 ${filter === key
                                 ? 'shadow-lg' : 'hover:text-[var(--text)]'}`}
-                            style={filter === f
+                            style={filter === key
                                 ? {
                                     background: 'var(--accent)',
                                     color: 'var(--accent-text)',
@@ -50,9 +56,10 @@ export default function Projects() {
                                     background: 'color-mix(in srgb, var(--bg-card) 70%, transparent)',
                                     color: 'var(--text-muted)'
                                 }}
-                            onMouseEnter={(e) => { if (filter !== f) { e.currentTarget.style.borderColor = 'var(--text)'; e.currentTarget.style.color = 'var(--text)'; } }}
-                            onMouseLeave={(e) => { if (filter !== f) { e.currentTarget.style.borderColor = 'color-mix(in srgb, var(--text-muted) 50%, transparent)'; e.currentTarget.style.color = 'var(--text-muted)'; } }}>
-                            {f === 'all' ? 'All' : f === 'web' ? 'Web Apps' : f === 'mobile' ? 'Mobile' : 'APIs'}
+                            onMouseEnter={(e) => { if (filter !== key) { e.currentTarget.style.borderColor = 'var(--text)'; e.currentTarget.style.color = 'var(--text)'; } }}
+                            onMouseLeave={(e) => { if (filter !== key) { e.currentTarget.style.borderColor = 'color-mix(in srgb, var(--text-muted) 50%, transparent)'; e.currentTarget.style.color = 'var(--text-muted)'; } }}>
+                            <Icon className="w-4 h-4" />
+                            {label}
                         </button>
                     ))}
                 </div>
@@ -88,11 +95,13 @@ export default function Projects() {
                                     ))}
                                 </div>
                                 <div className="flex gap-4">
-                                    <a href="#" className="link-underline font-medium transition-colors" style={{ color: 'var(--accent)' }}>
-                                        Live Demo →
+                                    <a href="#" className="group link-underline font-medium transition-colors inline-flex items-center gap-1.5" style={{ color: 'var(--accent)' }}>
+                                        <ExternalLink className="w-4 h-4" />
+                                        Live Demo
                                     </a>
-                                    <a href="#" className="link-underline font-medium transition-colors" style={{ color: 'var(--accent)' }}>
-                                        GitHub →
+                                    <a href="#" className="group link-underline font-medium transition-colors inline-flex items-center gap-1.5" style={{ color: 'var(--accent)' }}>
+                                        <Github className="w-4 h-4" />
+                                        GitHub
                                     </a>
                                 </div>
                             </div>
