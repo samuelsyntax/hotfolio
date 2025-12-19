@@ -29,7 +29,7 @@ export default function Hero() {
                     `
                 }} />
 
-            <div className="max-w-6xl mx-auto px-6 relative z-10">
+            <div className="max-w-6xl mx-auto px-6 pt-16 relative z-10">
                 <p className="reveal font-medium mb-3 text-lg tracking-wide" style={{ color: 'var(--accent)' }}>
                     Hello, I&apos;m
                 </p>
