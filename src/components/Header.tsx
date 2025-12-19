@@ -53,15 +53,20 @@ export default function Header() {
                         ? 'flex flex-col fixed top-0 right-0 w-[70%] h-screen justify-center items-center gap-8 z-50 transition-all'
                         : 'hidden'}`}
                         style={{ background: mobileOpen ? 'var(--bg-secondary)' : 'transparent' }}>
-                        {['Skills', 'Projects'].map((item) => (
-                            <li key={item}>
-                                <a href={`#${item.toLowerCase()}`}
-                                    className="link-underline text-[var(--text-muted)] hover:text-[var(--text)] font-medium transition-colors"
-                                    onClick={() => setMobileOpen(false)}>
-                                    {item}
-                                </a>
-                            </li>
-                        ))}
+                        <li>
+                            <a href="#skills"
+                                className="link-underline text-[var(--text-muted)] hover:text-[var(--text)] font-medium transition-colors"
+                                onClick={() => setMobileOpen(false)}>
+                                Skills
+                            </a>
+                        </li>
+                        <li>
+                            <Link href="/projects"
+                                className="link-underline text-[var(--text-muted)] hover:text-[var(--text)] font-medium transition-colors"
+                                onClick={() => setMobileOpen(false)}>
+                                Projects
+                            </Link>
+                        </li>
                         <li>
                             <Link href="/blog"
                                 className="link-underline text-[var(--text-muted)] hover:text-[var(--text)] font-medium transition-colors"

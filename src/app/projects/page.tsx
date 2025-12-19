@@ -1,12 +1,13 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
-import { ExternalLink, Github, ArrowRight } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import { LayoutGrid, Globe, Smartphone, Server, ExternalLink, Github } from 'lucide-react';
 import Link from 'next/link';
-import { featuredProjects } from '@/lib/projects';
+import { projects } from '@/lib/projects';
 
-export default function Projects() {
+export default function ProjectsPage() {
     const ref = useRef<HTMLDivElement>(null);
+    const [filter, setFilter] = useState('all');
 
     useEffect(() => {
         const el = ref.current;
@@ -20,16 +21,61 @@ export default function Projects() {
         }
     }, []);
 
-    return (
-        <section ref={ref} className="py-24" id="projects">
-            <div className="max-w-6xl mx-auto px-6">
-                <h2 className="reveal gradient-text-enhanced section-title text-3xl md:text-4xl font-bold text-center mb-16">
-                    Featured Projects
-                </h2>
+    const filtered = filter === 'all' ? projects : projects.filter(p => p.category === filter);
 
-                {/* Single column layout for featured projects */}
+    return (
+        <div ref={ref} className="min-h-screen pt-24 pb-16" style={{ background: 'var(--bg)' }}>
+            <div className="max-w-6xl mx-auto px-6">
+                {/* Header */}
+                <div className="mb-12">
+                    <Link
+                        href="/"
+                        className="inline-flex items-center gap-2 text-[var(--text-muted)] hover:text-[var(--accent)] transition-colors mb-8"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <path d="M19 12H5M12 19l-7-7 7-7" />
+                        </svg>
+                        Back to Home
+                    </Link>
+                    <h1 className="gradient-text text-4xl md:text-5xl font-bold mb-4">Projects</h1>
+                    <p className="text-[var(--text-muted)] text-lg max-w-2xl">
+                        A showcase of my work across web applications, mobile apps, and backend services.
+                    </p>
+                </div>
+
+                {/* Filter Buttons */}
+                <div className="reveal flex justify-center gap-3 mb-12 flex-wrap">
+                    {[
+                        { key: 'all', label: 'All', icon: LayoutGrid },
+                        { key: 'web', label: 'Web Apps', icon: Globe },
+                        { key: 'mobile', label: 'Mobile', icon: Smartphone },
+                        { key: 'api', label: 'APIs', icon: Server }
+                    ].map(({ key, label, icon: Icon }) => (
+                        <button key={key} onClick={() => setFilter(key)}
+                            className={`flex items-center gap-2 px-6 py-2.5 rounded-full font-medium transition-all duration-300 ${filter === key
+                                ? 'shadow-lg' : 'hover:text-[var(--text)]'}`}
+                            style={filter === key
+                                ? {
+                                    background: 'var(--accent)',
+                                    color: 'var(--accent-text)',
+                                    boxShadow: '0 4px 20px color-mix(in srgb, var(--accent) 30%, transparent)'
+                                }
+                                : {
+                                    border: '1px solid color-mix(in srgb, var(--text-muted) 50%, transparent)',
+                                    background: 'color-mix(in srgb, var(--bg-card) 70%, transparent)',
+                                    color: 'var(--text-muted)'
+                                }}
+                            onMouseEnter={(e) => { if (filter !== key) { e.currentTarget.style.borderColor = 'var(--text)'; e.currentTarget.style.color = 'var(--text)'; } }}
+                            onMouseLeave={(e) => { if (filter !== key) { e.currentTarget.style.borderColor = 'color-mix(in srgb, var(--text-muted) 50%, transparent)'; e.currentTarget.style.color = 'var(--text-muted)'; } }}>
+                            <Icon className="w-4 h-4" />
+                            {label}
+                        </button>
+                    ))}
+                </div>
+
+                {/* Single column layout for all projects */}
                 <div className="flex flex-col gap-8">
-                    {featuredProjects.map((project, index) => (
+                    {filtered.map((project, index) => (
                         <article key={project.id}
                             className="reveal glass-card hover-lift rounded-2xl overflow-hidden"
                             style={{ transitionDelay: `${index * 100}ms` }}>
@@ -77,31 +123,7 @@ export default function Projects() {
                         </article>
                     ))}
                 </div>
-
-                {/* View All Projects Button */}
-                <div className="reveal flex justify-center mt-12">
-                    <Link
-                        href="/projects"
-                        className="group inline-flex items-center gap-2 px-8 py-3 rounded-full font-semibold transition-all duration-300"
-                        style={{
-                            background: 'var(--accent)',
-                            color: 'var(--accent-text)',
-                            boxShadow: '0 4px 20px color-mix(in srgb, var(--accent) 30%, transparent)'
-                        }}
-                        onMouseEnter={(e) => {
-                            e.currentTarget.style.transform = 'translateY(-2px)';
-                            e.currentTarget.style.boxShadow = '0 8px 30px color-mix(in srgb, var(--accent) 40%, transparent)';
-                        }}
-                        onMouseLeave={(e) => {
-                            e.currentTarget.style.transform = 'translateY(0)';
-                            e.currentTarget.style.boxShadow = '0 4px 20px color-mix(in srgb, var(--accent) 30%, transparent)';
-                        }}
-                    >
-                        View All Projects
-                        <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
-                    </Link>
-                </div>
             </div>
-        </section>
+        </div>
     );
 }
