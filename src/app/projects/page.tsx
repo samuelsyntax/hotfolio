@@ -1,9 +1,10 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { LayoutGrid, Globe, Smartphone, Server, ExternalLink, Github } from 'lucide-react';
+import { LayoutGrid, Globe, Smartphone, Server } from 'lucide-react';
 import Link from 'next/link';
 import { projects } from '@/lib/projects';
+import { ProjectCard } from '@/components/Projects';
 
 export default function ProjectsPage() {
     const ref = useRef<HTMLDivElement>(null);
@@ -23,6 +24,13 @@ export default function ProjectsPage() {
 
     const filtered = filter === 'all' ? projects : projects.filter(p => p.category === filter);
 
+    const filterButtons = [
+        { key: 'all', label: 'All Projects', icon: LayoutGrid },
+        { key: 'web', label: 'Web Apps', icon: Globe },
+        { key: 'mobile', label: 'Mobile', icon: Smartphone },
+        { key: 'api', label: 'APIs', icon: Server }
+    ];
+
     return (
         <div ref={ref} className="min-h-screen pt-24 pb-16" style={{ background: 'var(--bg)' }}>
             <div className="max-w-6xl mx-auto px-6">
@@ -30,97 +38,82 @@ export default function ProjectsPage() {
                 <div className="mb-12">
                     <Link
                         href="/"
-                        className="inline-flex items-center gap-2 text-[var(--text-muted)] hover:text-[var(--accent)] transition-colors mb-8"
+                        className="inline-flex items-center gap-2 text-[var(--text-muted)] hover:text-[var(--accent)] transition-colors mb-8 group"
                     >
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            className="transition-transform group-hover:-translate-x-1"
+                        >
                             <path d="M19 12H5M12 19l-7-7 7-7" />
                         </svg>
                         Back to Home
                     </Link>
                     <h1 className="gradient-text text-4xl md:text-5xl font-bold mb-4">Projects</h1>
-                    <p className="text-[var(--text-muted)] text-lg max-w-2xl">
+                    <p className="text-[var(--text-muted)] text-lg max-w-2xl leading-relaxed">
                         A showcase of my work across web applications, mobile apps, and backend services.
+                        Each project represents a unique challenge and solution.
                     </p>
                 </div>
 
-                {/* Filter Buttons */}
-                <div className="reveal flex justify-center gap-3 mb-12 flex-wrap">
-                    {[
-                        { key: 'all', label: 'All', icon: LayoutGrid },
-                        { key: 'web', label: 'Web Apps', icon: Globe },
-                        { key: 'mobile', label: 'Mobile', icon: Smartphone },
-                        { key: 'api', label: 'APIs', icon: Server }
-                    ].map(({ key, label, icon: Icon }) => (
-                        <button key={key} onClick={() => setFilter(key)}
-                            className={`flex items-center gap-2 px-6 py-2.5 rounded-full font-medium transition-all duration-300 ${filter === key
-                                ? 'shadow-lg' : 'hover:text-[var(--text)]'}`}
-                            style={filter === key
-                                ? {
-                                    background: 'var(--accent)',
-                                    color: 'var(--accent-text)',
-                                    boxShadow: '0 4px 20px color-mix(in srgb, var(--accent) 30%, transparent)'
-                                }
-                                : {
-                                    border: '1px solid color-mix(in srgb, var(--text-muted) 50%, transparent)',
-                                    background: 'color-mix(in srgb, var(--bg-card) 70%, transparent)',
-                                    color: 'var(--text-muted)'
+                {/* Enhanced Filter Buttons */}
+                <div className="reveal flex justify-center gap-3 mb-14 flex-wrap">
+                    {filterButtons.map(({ key, label, icon: Icon }) => {
+                        const isActive = filter === key;
+                        return (
+                            <button
+                                key={key}
+                                onClick={() => setFilter(key)}
+                                className="flex items-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all duration-300"
+                                style={{
+                                    background: isActive
+                                        ? 'linear-gradient(135deg, var(--accent) 0%, color-mix(in srgb, var(--accent) 80%, #8b5cf6) 100%)'
+                                        : 'color-mix(in srgb, var(--bg-card) 80%, transparent)',
+                                    color: isActive ? 'var(--accent-text)' : 'var(--text-muted)',
+                                    border: isActive ? 'none' : '1px solid color-mix(in srgb, var(--border) 30%, transparent)',
+                                    boxShadow: isActive
+                                        ? '0 8px 25px color-mix(in srgb, var(--accent) 35%, transparent)'
+                                        : 'none',
+                                    transform: isActive ? 'translateY(-2px)' : 'translateY(0)'
                                 }}
-                            onMouseEnter={(e) => { if (filter !== key) { e.currentTarget.style.borderColor = 'var(--text)'; e.currentTarget.style.color = 'var(--text)'; } }}
-                            onMouseLeave={(e) => { if (filter !== key) { e.currentTarget.style.borderColor = 'color-mix(in srgb, var(--text-muted) 50%, transparent)'; e.currentTarget.style.color = 'var(--text-muted)'; } }}>
-                            <Icon className="w-4 h-4" />
-                            {label}
-                        </button>
-                    ))}
+                                onMouseEnter={(e) => {
+                                    if (!isActive) {
+                                        e.currentTarget.style.background = 'color-mix(in srgb, var(--accent) 15%, var(--bg-card))';
+                                        e.currentTarget.style.color = 'var(--text)';
+                                        e.currentTarget.style.borderColor = 'color-mix(in srgb, var(--accent) 40%, transparent)';
+                                    }
+                                }}
+                                onMouseLeave={(e) => {
+                                    if (!isActive) {
+                                        e.currentTarget.style.background = 'color-mix(in srgb, var(--bg-card) 80%, transparent)';
+                                        e.currentTarget.style.color = 'var(--text-muted)';
+                                        e.currentTarget.style.borderColor = 'color-mix(in srgb, var(--border) 30%, transparent)';
+                                    }
+                                }}
+                            >
+                                <Icon className="w-4 h-4" />
+                                {label}
+                            </button>
+                        );
+                    })}
                 </div>
 
-                {/* Single column layout for all projects */}
-                <div className="flex flex-col gap-8">
+                {/* Projects count indicator */}
+                <div className="text-center mb-8">
+                    <span className="text-[var(--text-muted)] text-sm">
+                        Showing <span className="font-semibold text-[var(--text)]">{filtered.length}</span> {filtered.length === 1 ? 'project' : 'projects'}
+                    </span>
+                </div>
+
+                {/* Single column layout for all projects using enhanced cards */}
+                <div className="flex flex-col gap-10">
                     {filtered.map((project, index) => (
-                        <article key={project.id}
-                            className="reveal glass-card hover-lift rounded-2xl overflow-hidden"
-                            style={{ transitionDelay: `${index * 100}ms` }}>
-                            {/* Horizontal card layout */}
-                            <div className="flex flex-col md:flex-row">
-                                {/* Project banner */}
-                                <div className="h-48 md:h-auto md:w-64 md:min-h-[200px] flex items-center justify-center text-2xl font-bold relative overflow-hidden flex-shrink-0"
-                                    style={{
-                                        background: 'linear-gradient(135deg, var(--accent) 0%, color-mix(in srgb, var(--accent) 70%, var(--bg)) 100%)',
-                                        color: 'var(--accent-text)'
-                                    }}>
-                                    <span className="relative z-10">{project.title.split(' ')[0]}</span>
-                                    {/* Decorative elements */}
-                                    <div className="absolute inset-0 opacity-20"
-                                        style={{
-                                            background: 'radial-gradient(circle at 80% 20%, white 0%, transparent 50%)'
-                                        }} />
-                                </div>
-                                {/* Project content */}
-                                <div className="p-6 flex-1 flex flex-col justify-center">
-                                    <h3 className="text-xl font-semibold text-[var(--text)] mb-3">{project.title}</h3>
-                                    <p className="text-[var(--text-muted)] mb-4 leading-relaxed">{project.desc}</p>
-                                    <div className="flex flex-wrap gap-2 mb-4">
-                                        {project.tags.map((tag) => (
-                                            <span key={tag} className="px-3 py-1 rounded-full text-sm font-medium transition-colors"
-                                                style={{
-                                                    background: 'color-mix(in srgb, var(--accent) 15%, transparent)',
-                                                    color: 'var(--text)',
-                                                    border: '1px solid color-mix(in srgb, var(--accent) 40%, transparent)'
-                                                }}>{tag}</span>
-                                        ))}
-                                    </div>
-                                    <div className="flex gap-4">
-                                        <a href={project.liveUrl || '#'} className="group link-underline font-medium transition-colors inline-flex items-center gap-1.5" style={{ color: 'var(--accent)' }}>
-                                            <ExternalLink className="w-4 h-4" />
-                                            Live Demo
-                                        </a>
-                                        <a href={project.githubUrl || '#'} className="group link-underline font-medium transition-colors inline-flex items-center gap-1.5" style={{ color: 'var(--accent)' }}>
-                                            <Github className="w-4 h-4" />
-                                            GitHub
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </article>
+                        <ProjectCard key={project.id} project={project} index={index} />
                     ))}
                 </div>
             </div>
