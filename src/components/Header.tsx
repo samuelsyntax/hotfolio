@@ -54,11 +54,11 @@ export default function Header() {
                         : 'hidden'}`}
                         style={{ background: mobileOpen ? 'var(--bg-secondary)' : 'transparent' }}>
                         <li>
-                            <a href="#skills"
+                            <Link href="/#skills"
                                 className="link-underline text-[var(--text-muted)] hover:text-[var(--text)] font-medium transition-colors"
                                 onClick={() => setMobileOpen(false)}>
                                 Skills
-                            </a>
+                            </Link>
                         </li>
                         <li>
                             <Link href="/projects"
